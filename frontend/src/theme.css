@@ -367,6 +367,44 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .tlitem b{font-size:13px;display:block}
 .tlitem span{font-size:11.5px;color:var(--ink-3)}
 
+/* revisión documento por documento / verificación en vivo (candidato) */
+.revlist{display:flex;flex-direction:column;gap:9px}
+.revrow{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--line);
+  border-radius:var(--r-s);background:var(--surface);transition:border-color .25s var(--ease), background .25s var(--ease)}
+.revrow .st{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--inset);color:var(--ink-3);border:1px solid var(--line)}
+.revrow .st svg{width:14px;height:14px}
+.revrow .t{flex:1;min-width:0}
+.revrow .t b{font-size:12.5px;display:block}
+.revrow .t span{font-size:11px;color:var(--ink-3);display:block;line-height:1.35}
+.revrow[data-e="doing"]{border-color:var(--brand-line);background:var(--brand-soft)}
+.revrow[data-e="doing"] .st{background:transparent;border-color:transparent}
+.revrow[data-e="ok"] .st{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 28%,transparent)}
+.revrow[data-e="bad"]{border-color:color-mix(in srgb,var(--warn) 42%,transparent);background:var(--warn-soft)}
+.revrow[data-e="bad"] .st{background:transparent;color:var(--warn);border-color:color-mix(in srgb,var(--warn) 34%,transparent)}
+.revrow[data-e="wait"]{opacity:.5}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--inset);border-top-color:var(--brand-2);
+  animation:girar .75s linear infinite}
+@keyframes girar{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none;border-top-color:var(--brand-2)}}
+.revcab{display:flex;align-items:center;gap:10px}
+.revcab .spin{width:18px;height:18px}
+.revcab b{font-family:var(--f-d);font-size:15px}
+.cuenta-docs{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.paso-ia{display:flex;align-items:flex-start;gap:11px;padding:12px 13px;border-radius:var(--r-s);
+  border:1px solid var(--line);background:var(--surface)}
+.paso-ia[data-e="doing"]{border-color:var(--brand-line);background:var(--brand-soft)}
+.paso-ia[data-e="ok"]{border-color:color-mix(in srgb,var(--ok) 30%,transparent)}
+.paso-ia[data-e="wait"]{opacity:.45}
+.paso-ia .st{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--inset);color:var(--ink-3)}
+.paso-ia[data-e="ok"] .st{background:var(--ok);color:#04150F}
+.paso-ia .st svg{width:13px;height:13px}
+.paso-ia .t b{font-size:12.5px;display:block}
+.paso-ia .t span{font-size:11px;color:var(--ink-3)}
+.paso-ia .t em{font-style:normal;font-family:var(--f-m);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--brand-2);display:block;margin-top:3px}
+
 /* acceso (pantalla de login independiente, sin SSO en rm-talent) */
 .acceso{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:26px;padding:40px 24px;background:

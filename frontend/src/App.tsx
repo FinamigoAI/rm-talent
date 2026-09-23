@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { ToastProvider } from './contexts/ToastContext';
+import { CandidatesProvider } from './contexts/CandidatesContext';
 import { Login } from './pages/Login';
 import { RequireAuth } from './layouts/RequireAuth';
 import { AppShell } from './layouts/AppShell';
@@ -33,9 +34,11 @@ export function App() {
               <Route path="cfg" element={<ConfiguradorVacante />} />
               <Route path="pub" element={<Publicada />} />
               <Route path="vacantes" element={<Vacantes />} />
-              <Route path="tablero" element={<Tablero />} />
-              <Route path="exp/:id" element={<Expediente />} />
-              <Route path="entrevista/:id" element={<GuiaEntrevista />} />
+              <Route element={<CandidatesProvider><Outlet /></CandidatesProvider>}>
+                <Route path="tablero" element={<Tablero />} />
+                <Route path="exp/:id" element={<Expediente />} />
+                <Route path="entrevista/:id" element={<GuiaEntrevista />} />
+              </Route>
               <Route path="cierre" element={<SeleccionCierre />} />
               <Route path="descartados" element={<BaseTalento />} />
               <Route path="lider" element={<Lider />} />
