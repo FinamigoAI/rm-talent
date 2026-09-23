@@ -1,0 +1,25 @@
+// binaryTargets: la imagen final (node:20-alpine) es Alpine con OpenSSL 3.x.
+// Sin esto, Prisma descarga solo el motor "native" (musl + OpenSSL 1.1.x) y
+// falla en runtime con "Error loading shared library libssl.so.1.1" — ya nos
+// pasó una vez en riskmanagementv1.0, se evita desde el día uno aquí.
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// v1 mínima, a propósito: sin MFA, sin invitaciones, sin SSO — un login
+// directo de usuario/contraseña para tener algo real y funcionando ya. El
+// SPEC (docs/SPEC.md) describe el modelo completo de M1 (invitaciones,
+// ciclo de vida, puerto SSO D-20) — se conecta cuando este esqueleto ya
+// esté probado en vivo.
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
