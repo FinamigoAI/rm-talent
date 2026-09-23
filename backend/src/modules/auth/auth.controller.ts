@@ -13,7 +13,8 @@ export async function loginHandler(req: Request, res: Response) {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('login failed', err);
     res.status(401).json({ error: 'credenciales inválidas' });
   }
 }
