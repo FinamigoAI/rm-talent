@@ -9,40 +9,68 @@ conectar Talent a la suite — ver `CLAUDE.md` de `riskmanagementv1.0` sección 
 módulos reales".
 
 No confundir con `github.com/vitamijdel/Talent.git` (clonado en `Documents\git\Talent`) — ese
-repo es solo un prototipo/mockup HTML interactivo, no tiene backend real. Este repo (`rm-talent`)
-es el build real.
+es OTRO prototipo/mockup HTML, un diagrama de flujo/pantallas de diseño sin lógica.
+
+**El prototipo real que sí se portó a este repo** fue un demo funcional aparte,
+`rm-talent-demo` en Cloud Run (`https://rm-talent-demo-yjvrwuopua-pv.a.run.app`), construido
+colaborativamente en una sesión anterior pero **sin repo propio** — un solo archivo HTML de
+~2100 líneas con su propio sistema de diseño completo (colores, tipografía Space
+Grotesk/Manrope/Inter, componentes) y 22 pantallas interactivas (login/hub, herramienta del
+reclutador completa, flujo móvil del candidato). Ese HTML se descargó, se analizó a fondo, y se
+portó **1:1** a React real — mismas clases, mismo copy, mismos datos — en vez de rehacerse desde
+cero. El HTML original ya no existe en ningún lado (era solo un archivo temporal de la sesión
+donde se hizo el análisis); este repo es ahora la única fuente de verdad para ese diseño.
 
 ## Hecho
 
-- **Esqueleto mínimo funcionando de punta a punta**: backend Express+Prisma+Postgres con
-  login/logout/me (cookie httpOnly, JWT HS256 7 días), frontend React con página de login y un
-  dashboard que lista los 10 módulos v1 del SPEC (M1-M11, todos "Próximamente" por ahora).
-- **Desplegado en GCP `pdi-labs`** (2026-09-23), mismo patrón que `riskmanagementv1.0`:
+- **Backend real funcionando de punta a punta**: Express+Prisma+Postgres, login/logout/me
+  (cookie httpOnly, JWT HS256 7 días).
+- **Frontend: el prototipo completo portado a React** (2026-09-23), no solo el login:
+  - **Sistema de diseño** (`frontend/src/theme.css`) — copiado del prototipo verbatim: mismas
+    variables de color, tipografía, componentes (`.btn`, `.pill`, `.card`, `.tbl`, `.kpi`,
+    `.sect`/`.itm`/`.find` del expediente, `.steps`/`.cfgpane` del wizard, `.phone`/`.pview` del
+    flujo móvil). Tailwind se eliminó por completo — no se usa nada de él.
+  - **Herramienta del reclutador** (`/app/*`, protegida por login): bandeja de solicitudes,
+    detalle de solicitud, configurador de vacante (wizard de 5 pasos), publicación con QR
+    generado localmente (sin librería externa, `components/Qr.tsx`), lista de vacantes, tablero
+    de candidatos, expediente del candidato (con flujo real de "resolver hallazgo con motivo" vía
+    `contexts/CandidatesContext.tsx`, estado en memoria compartido entre pantallas), guía de
+    entrevista, selección y cierre, base de talento/descartados, vista de líder de área.
+  - **Flujo móvil del candidato** (`/candidato`, público, sin login): 10 pasos con animaciones de
+    validación en vivo (RFC, identidad, documentos) y modo "play automático" — el archivo más
+    grande y complejo del port (`pages/CandidateStage.tsx` + `data/candidatoStage.ts`).
+  - Todo esto es **estado de cliente únicamente** (sin persistencia real en Postgres para estos
+    módulos) — exactamente el mismo alcance que tenía el prototipo original. Ver "Pendientes".
+- **Desplegado en GCP `pdi-labs`**, mismo patrón que `riskmanagementv1.0`:
   - Cloud SQL: reutiliza la instancia existente `riskmanagement-db` (no una nueva) — base de
     datos `rmtalent`, usuario dedicado `rmtalent_app`.
   - Secrets: `rmtalent-database-url`, `rmtalent-jwt-secret`.
   - Cloud Run: servicio `rm-talent`, región `us-central1`, `--max-instances=1`.
   - URL viva: `https://rm-talent-763701440071.us-central1.run.app`
-  - Login/`/me` verificados en vivo contra la URL real (no solo local).
-- Lecciones de `riskmanagementv1.0` pre-aplicadas desde el día uno (para no repetir bugs ya
-  conocidos): `binaryTargets` de Prisma para Alpine/OpenSSL, `apk add openssl` en el Dockerfile,
-  usuario no-root, manejo de respuestas 204 en `api/client.ts`, `index.css` con
-  `@import "tailwindcss";` creado e importado desde el inicio.
+  - Login + todas las pantallas verificadas en vivo contra la URL real (no solo local),
+    incluyendo el flujo de "resolver hallazgo" y el flujo móvil del candidato.
+- Lecciones de `riskmanagementv1.0` pre-aplicadas desde el día uno: `binaryTargets` de Prisma
+  para Alpine/OpenSSL, `apk add openssl` en el Dockerfile, usuario no-root, manejo de respuestas
+  204 en `api/client.ts`.
 
 ## Pendientes
 
 - **Sincronizar con GitHub**: este repo no tiene remoto configurado todavía (a diferencia de
   `riskmanagementv1.0`, que ya está en `github.com/FinamigoAI/riskmanagementv1.0.git`). Falta
   decidir el remoto real y hacer el primer push.
-- **Módulos M1-M11**: hoy son solo tarjetas "Próximamente" en el dashboard — ningún módulo real
-  (Catálogo, Requisición, Vacante, Postulación, Screening, Expediente, Decisión, Bitácora,
-  Notificaciones, Proveedores) está construido. El SPEC completo (`docs/SPEC.md` si se copia
-  aquí, o ver `Downloads\SPEC.md` v2.2) describe el motor de screening como una máquina de
-  estados de larga duración persistida en Postgres — arquitectura no trivial, sin construir.
-- **Sin auditoría/bitácora todavía**: a diferencia de `riskmanagementv1.0`, este esqueleto no
-  tiene `AuditLog` con hash-chain. El SPEC (RN-53) la requiere para producción real.
+- **Los 11 módulos de la herramienta del reclutador son UI sin backend real todavía**: se ve y
+  se siente como el producto terminado, pero las solicitudes/vacantes/candidatos son datos fijos
+  de demo (los mismos 5 candidatos, la misma VAC-1184) — no hay tablas Prisma para
+  `Solicitud`/`Vacante`/`Candidato`/etc., ni el motor de screening real (pre-filtro → documental
+  → identidad → listas) que describe el SPEC. El siguiente trabajo real de este proyecto es
+  conectar cada pantalla a datos reales, empezando por decidir el modelo de datos (`Solicitud`,
+  `Vacante`, `Candidato`, `Hallazgo`, `Validacion`) — el SPEC completo (`Downloads\SPEC.md` v2.2)
+  describe el motor de screening como una máquina de estados de larga duración persistida en
+  Postgres.
+- **Sin auditoría/bitácora todavía**: a diferencia de `riskmanagementv1.0`, no hay `AuditLog` con
+  hash-chain. El SPEC (RN-53) la requiere para producción real.
 - **Sin multi-tenancy**: tabla `User` plana, sin `organizationId`. El SPEC (D7) exige aislamiento
-  estricto por organización — no implementado en este esqueleto mínimo.
+  estricto por organización — no implementado todavía.
 
 ## Nota operativa importante — Prisma + Cloud SQL + `gcloud sql users set-password`
 
