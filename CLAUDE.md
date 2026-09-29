@@ -1,6 +1,8 @@
 # rm-talent
 
 Producto Talent standalone — Node.js 20/Express/Prisma/PostgreSQL + React/Vite/Tailwind.
+Repo remoto: `https://github.com/FinamigoAI/rm-talent.git` (privado) — sincronizado con `main`
+local desde 2026-09-29.
 
 Decisión explícita del usuario (2026-09-22/23): **sin SSO ni MFA por ahora** — login simple
 usuario/contraseña (bcrypt + JWT HS256 con `jose`, un solo secreto compartido). La integración
@@ -55,9 +57,6 @@ donde se hizo el análisis); este repo es ahora la única fuente de verdad para 
 
 ## Pendientes
 
-- **Sincronizar con GitHub**: este repo no tiene remoto configurado todavía (a diferencia de
-  `riskmanagementv1.0`, que ya está en `github.com/FinamigoAI/riskmanagementv1.0.git`). Falta
-  decidir el remoto real y hacer el primer push.
 - **Los 11 módulos de la herramienta del reclutador son UI sin backend real todavía**: se ve y
   se siente como el producto terminado, pero las solicitudes/vacantes/candidatos son datos fijos
   de demo (los mismos 5 candidatos, la misma VAC-1184) — no hay tablas Prisma para
