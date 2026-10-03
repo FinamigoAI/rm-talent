@@ -69,6 +69,23 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .tiny{font-size:11.5px}
 .big{font-family:var(--f-d);font-weight:700;font-variant-numeric:tabular-nums}
 
+/* grid genérico de tarjetas de módulo (usado por hubs/dashboards simples) */
+.mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:16px}
+.mod{position:relative;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px;display:flex;flex-direction:column;gap:12px;min-height:190px;box-shadow:var(--sh-1);
+  transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease}
+.mod .ic{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--acc,var(--brand-2)) 14%,transparent);color:var(--acc,var(--brand-2))}
+.mod .ic svg{width:20px;height:20px}
+.mod h3{font-size:17px}
+.mod p{font-size:12.5px;color:var(--ink-2);flex:1}
+.mod .foot{display:flex;align-items:center;justify-content:space-between}
+.mod.live{cursor:pointer;border-color:color-mix(in srgb,var(--acc,var(--brand-2)) 34%,var(--line))}
+.mod.live:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:var(--acc,var(--brand-2))}
+.mod.soon{cursor:not-allowed}
+.mod.soon .ic,.mod.soon h3,.mod.soon p{opacity:.5}
+.mod .go{font-family:var(--f-m);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc,var(--brand-2));font-weight:600}
+
 /* login */
 .login{min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr}
 .login .brandside{color:var(--rail-ink);padding:46px 48px;display:flex;flex-direction:column;
